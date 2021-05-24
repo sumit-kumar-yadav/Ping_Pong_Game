@@ -1,9 +1,12 @@
+body{
+    background-color: rgb(118, 143, 163);
+}
 #container {
     position: relative;
 }
 
 
-#rod1, #rod2 {
+#player1, #player2 {
     width: 200px;
     height: 20px;
     position: fixed;
@@ -14,12 +17,12 @@
     font-weight: bold;
 }
 
-#rod1 {
+#player1 {
     background-color: blue;
     top: 0px;    
 }
 
-#rod2 {
+#player2 {
     background-color: blueviolet;
     bottom: 0px;
 }
@@ -37,8 +40,8 @@
 
 
 #score{
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    color: grey;
+    color: rgb(247, 242, 0);
     opacity: 0.5;
 }

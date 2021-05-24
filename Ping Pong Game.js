@@ -1,18 +1,18 @@
 var ball = document.getElementById('ball');
-var rod1 = document.getElementById('rod1');
-var rod2 = document.getElementById('rod2');
+var player1 = document.getElementById('player1');
+var player2 = document.getElementById('player2');
 
 
 const storeName = "PPName";
 const storeScore = "PPMaxScore";
-const rod1Name = "Rod 1";
-const rod2Name = "Rod 2";
+const player1Name = "Player 1";
+const player2Name = "Player 2";
 
 
 let score,
     maxScore,
     movement,
-    rod,
+    player,
     ballSpeedX = 2,
     ballSpeedY = 2;
 
@@ -24,35 +24,39 @@ let windowWidth = window.innerWidth,
 
 
 (function () {
-    rod = localStorage.getItem(storeName);
+    player = localStorage.getItem(storeName);
     maxScore = localStorage.getItem(storeScore);
 
-    if (rod === "null" || maxScore === "null") {
+    if (player === "null" || maxScore === "null") {
         alert("This is the first time you are playing this game. LET'S START");
         maxScore = 0;
-        rod = "Rod1"
+        player = "Player1"
     } else {
-        alert(rod + " has maximum score of " + maxScore * 100);
+        alert(
+            "*Use left & right arrows to control the rod.                                             " + 
+            "*" + 
+            player + " has maximum score of " + maxScore * 100
+        );
     }
 
-    resetBoard(rod);
+    resetBoard(player);
 })();
 
 
 
-function resetBoard(rodName) {
+function resetBoard(playerName) {
 
-    rod1.style.left = (window.innerWidth - rod1.offsetWidth) / 2 + 'px';
-    rod2.style.left = (window.innerWidth - rod2.offsetWidth) / 2 + 'px';
+    player1.style.left = (window.innerWidth - player1.offsetWidth) / 2 + 'px';
+    player2.style.left = (window.innerWidth - player2.offsetWidth) / 2 + 'px';
     ball.style.left = (windowWidth - ball.offsetWidth) / 2 + 'px';
 
 
     // Lossing player gets the ball
-    if (rodName === rod2Name) {
-        ball.style.top = (rod1.offsetTop + rod1.offsetHeight) + 'px';
+    if (playerName === player2Name) {
+        ball.style.top = (player1.offsetTop + player1.offsetHeight) + 'px';
         ballSpeedY = 2;
-    } else if (rodName === rod1Name) {
-        ball.style.top = (rod2.offsetTop - rod2.offsetHeight) + 'px';
+    } else if (playerName === player1Name) {
+        ball.style.top = (player2.offsetTop - player2.offsetHeight) + 'px';
         ballSpeedY = -2;
     }
 
@@ -63,38 +67,39 @@ function resetBoard(rodName) {
 
 
 
-function storeWin(rod, score) {
+function storeWin(player, score) {
 
     if (score > maxScore) {
         maxScore = score;
-        localStorage.setItem(storeName, rod);
+        localStorage.setItem(storeName, player);
         localStorage.setItem(storeScore, maxScore);
     }
 
     clearInterval(movement);
-    resetBoard(rod);
+    resetBoard(player);
     document.getElementById("score").innerHTML = 0;
 
-    alert(rod + " wins with a score of " + (score * 100) + ". Max score is: " + (maxScore * 100));
+    alert(player + " wins with a score of " + (score * 100) + ". Max score is: " + (maxScore * 100));
 
 }
 
 
 
 
-window.addEventListener('keypress', function(){
-    let rodSpeed = 20;
-    var rodLeft = rod1.offsetLeft;
-    var rodWidth = rod1.offsetWidth;
-    var rodHeight = rod1.offsetHeight;
-    // let rodRect = rod1.getBoundingClientRect();  --->> in solution
+window.addEventListener('keydown', function(){
+    console.log("event.code", event.code);
+    let playerSpeed = 20;
+    var playerLeft = player1.offsetLeft;
+    var playerWidth = player1.offsetWidth;
+    var playerHeight = player1.offsetHeight;
+    // let playerRect = player1.getBoundingClientRect();  --->> in solution
 
-    if (event.code === "KeyD" && ((rodLeft + rodWidth) < windowWidth)) {
-        rod1.style.left = (rodLeft) + rodSpeed + 'px';
-        rod2.style.left = rod1.style.left;
-    } else if (event.code === "KeyA" && (rodLeft > 0)) {
-        rod1.style.left = (rodLeft) - rodSpeed + 'px';
-        rod2.style.left = rod1.style.left;
+    if ((event.code === "KeyD" || event.code === "ArrowRight") && ((playerLeft + playerWidth) < windowWidth)) {
+        player1.style.left = (playerLeft) + playerSpeed + 'px';
+        player2.style.left = player1.style.left;
+    } else if ((event.code === "KeyA" || event.code === "ArrowLeft") && (playerLeft > 0)) {
+        player1.style.left = (playerLeft) - playerSpeed + 'px';
+        player2.style.left = player1.style.left;
     }
 
     if (event.code === "Enter") {
@@ -106,10 +111,10 @@ window.addEventListener('keypress', function(){
             let ballY = ballRect.y;
             let ballDia = ballRect.width;
 
-            let rod1Height = rod1.offsetHeight;
-            let rod2Height = rod2.offsetHeight;
-            let rod1Width = rod1.offsetWidth;
-            let rod2Width = rod2.offsetWidth;
+            let player1Height = player1.offsetHeight;
+            let player2Height = player2.offsetHeight;
+            let player1Width = player1.offsetWidth;
+            let player2Width = player2.offsetWidth;
 
 
             movement = setInterval(function () {
@@ -117,8 +122,8 @@ window.addEventListener('keypress', function(){
                 ballX += ballSpeedX;
                 ballY += ballSpeedY;
 
-                var rod1X = rod1.getBoundingClientRect().x;
-                var rod2X = rod2.getBoundingClientRect().x;
+                var player1X = player1.getBoundingClientRect().x;
+                var player2X = player2.getBoundingClientRect().x;
 
                 ball.style.left = ballX + 'px';
                 ball.style.top = ballY + 'px';
@@ -131,27 +136,27 @@ window.addEventListener('keypress', function(){
                 // It specifies the center of the ball on the viewport
                 let ballPos = ballX + ballDia / 2;
 
-                // Check for Rod 1
-                if (ballY <= rod1Height) {
+                // Check for Player 1
+                if (ballY <= player1Height) {
                     ballSpeedY = -ballSpeedY; // Reverses the direction
                     score++;
                     document.getElementById("score").innerHTML = score*100;
 
                     // Check if the game ends
-                    if ((ballPos < rod1X) || (ballPos > (rod1X + rod1Width))) {
-                        storeWin(rod2Name, score);
+                    if ((ballPos < player1X) || (ballPos > (player1X + player1Width))) {
+                        storeWin(player2Name, score);
                     }
                 }
 
-                // Check for Rod 2
-                else if ((ballY + ballDia) >= (windowHeight - rod2Height)) {
+                // Check for Player 2
+                else if ((ballY + ballDia) >= (windowHeight - player2Height)) {
                     ballSpeedY = -ballSpeedY; // Reverses the direction
                     score++;
                     document.getElementById("score").innerHTML = score*100;
 
                     // Check if the game ends
-                    if ((ballPos < rod2X) || (ballPos > (rod2X + rod2Width))) {
-                        storeWin(rod1Name, score);
+                    if ((ballPos < player2X) || (ballPos > (player2X + player2Width))) {
+                        storeWin(player1Name, score);
                     }
                 }
 
